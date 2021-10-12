@@ -1,0 +1,12 @@
+{
+  "name": "student-lecturer-registration-portal",
+  "version": "1.0.0",
+  "description": "An app that shows the interaction between students and lecturers during course registration",
+  "main": "app.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "SET NODE_ENV=DEVELOPMENT& nodemon server.js"
+  },
+  "author": "Edomaruse Frank",
+  "license": "ISC"
+}
