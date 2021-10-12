@@ -1,0 +1,62 @@
+[
+    {
+        "name": "Data Structures",
+        "code": "CSC 201",
+        "units": 3,
+        "level": 200
+    },
+    {
+        "name": "Algorithimic Patterns",
+        "code": "CSC 501",
+        "units": 4,
+        "level": 500
+    },
+    {
+        "name": "Human-Computer Interaction",
+        "code": "CSC 305",
+        "units": 3,
+        "level": 300
+    },
+    {
+        "name": "Introduction to Computer Science",
+        "code": "CSC 101",
+        "units": 2,
+        "level": 100
+    },
+    {
+        "name": "Robotics and AI",
+        "code": "CSC 401",
+        "units": 4,
+        "level": 400
+    },
+    {
+        "name": "Introduction to Basic Algorithms",
+        "code": "CSC 205",
+        "units": 2,
+        "level": 200
+    },
+    {
+        "name": "Intorduction to Programming Languages - Python",
+        "code": "CSC 106",
+        "units": 3,
+        "level": 100
+    },
+    {
+        "name": "Data Structures II",
+        "code": "CSC 305",
+        "units": 3,
+        "level": 300
+    },
+    {
+        "name": "The Internet - HTTP and Servers",
+        "code": "CSC 503",
+        "units": 4,
+        "level": 500
+    },
+    {
+        "name": "JAVA and Coding Structures",
+        "code": "CSC 408",
+        "units": 3,
+        "level": 400
+    }
+]

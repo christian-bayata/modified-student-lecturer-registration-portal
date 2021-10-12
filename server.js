@@ -10,5 +10,5 @@ dbConnect();
 
 const port = process.env.PORT;
 const environment = process.env.NODE_ENV;
-const server = app.listen(port, () => console.log(`Server is running on port ${port} in ${environment} mode`)); 
+app.listen(port, () => console.log(`Server is running on port ${port} in ${environment} mode`)); 
 

@@ -5,4 +5,11 @@ const app = express();
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
+//Import all routes
+const courses = require("./routes/courses")
+
+
+//Use the imported routes
+app.use('/api/v1', courses);
+
 module.exports  = app;
