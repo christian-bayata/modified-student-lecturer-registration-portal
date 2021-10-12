@@ -1,12 +1,15 @@
-//Creates the Errorhandler class which is a child of the node Error class;
+/*
+    @param message
+    @param statusCode
+*/
 
-class ErrorHandler extends error() {
+class ErrorHandler extends Error {
     constructor(message, statusCode) {
         super(message);
     
-        this.statusCode = this.statusCode;
+        this.statusCode = statusCode;
 
-        Error.CaptureStackTrace(this, this.constructor);
+        Error.captureStackTrace(this, this.constructor);
     }
 };
 
