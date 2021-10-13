@@ -3,10 +3,14 @@ require('express-async-errors');
 const express = require('express');
 const app = express();
 const errorMiddleware = require('./middlewares/error');
+const cookieParser = require('cookie-parser');
 
 //Set up the express urlencoded and json files
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+
+//cookie parser config
+app.use(cookieParser());
 
 //Import all routes
 const courses = require('./routes/courses')
