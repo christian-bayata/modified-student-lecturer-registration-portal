@@ -24,11 +24,11 @@ exports.getCourses = async (req, res, next) => {
 };
 
 /*
-    @params req
-    @params res
-    @params next
+    @params: req
+    @params: res
+    @params: next
 
-    @return <Promise(void)>
+    @return: <Promise(void)>
 */
 
 //Gets a single course by it's ID ............./api/v1/course/:id
@@ -43,3 +43,4 @@ exports.getSingleCourse = async (req, res, next) => {
         course
     });
 };
+

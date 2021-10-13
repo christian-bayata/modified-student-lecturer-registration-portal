@@ -9,11 +9,12 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 //Import all routes
-const courses = require("./routes/courses")
-
+const courses = require('./routes/courses')
+const users = require('./routes/users')
 
 //Use the imported routes
 app.use('/api/v1', courses);
+app.use('/api/v1', users);
 
 //Use the error handling middleware;
 app.use(errorMiddleware);
