@@ -65,3 +65,25 @@ exports.loginUser = async (req, res, next) => {
 
     storeToken(user, status.OK, res);
 };
+
+/* 
+    @params: req
+    @params: res
+    @params: next
+
+    @returns: {Promise<*>} 
+*/
+
+//Log out user ................................/api/v1/logout
+exports.logoutUser = async (req, res, next) => {
+    //Define the cookie options
+    const options = {
+        expires: new Date(Date.now),
+        httpOnly: false
+    };
+
+    res.status(status.OK).cookie('token', null, options).json({
+        success: true,
+        message: "user is logged out"
+    });
+}
