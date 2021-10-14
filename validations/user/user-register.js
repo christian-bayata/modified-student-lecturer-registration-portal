@@ -5,7 +5,7 @@ const Joi = require('joi');
     @returns: {*} 
 */
 
-const validateUser = (user) => {
+const validateRegister = (user) => {
     const schema = Joi.object({
         
         firstName: Joi.string()
@@ -34,4 +34,4 @@ const validateUser = (user) => {
     return schema.validate(user);
 }
 
-exports.validate = validateUser;
+module.exports = validateRegister;

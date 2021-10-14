@@ -1,6 +1,6 @@
 require('express-async-errors');
 const User = require('../models/users');
-const { validate } = require('../validations/user/user-register');
+const validateRegister = require('../validations/user/user-register');
 const status = require('http-status');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
@@ -20,14 +20,14 @@ const ErrorHandler = require('../utils/ErrorHandler');
 exports.registerUser = async (req, res, next) => {
     
     //validate the input of the user
-    const { error }  = await validate(req.body); 
+    const { error }  = await validateRegister(req.body); 
     if(error) return res.status(status.BAD_REQUEST).json(error.details[0].message);
   
     let { firstName, lastName, email, password, regNo } = req.body;
     
     //Check to see if the user already exists;
-    let findUserByEmail = await User.findOne({email});
-    if(findUserByEmail) return next(new ErrorHandler("This user already exists", status.BAD_REQUEST));
+    let checkUserReg = await User.findOne({regNo});
+    if(checkUserReg) return next(new ErrorHandler("The user with this registration number already exists", status.BAD_REQUEST));
     
     password = await HashPassword.encryptPassword(password);
     let user =  await User.create({ firstName, lastName, email, password, regNo })
@@ -35,6 +35,33 @@ exports.registerUser = async (req, res, next) => {
     storeToken(user, status.OK, res);
 }
 
-// exports.loginUser = async (req, res, next) => {
+/* 
+    @params: req
+    @params: res
+    @params: next
 
-// }
+    @returns: {Promise<*>} 
+*/
+
+//Login user ............................../api/v1/login
+exports.loginUser = async (req, res, next) => {
+   
+    let { regNo, password } = req.body;
+
+    //Check to be sure that the user supplies both Reg_No and password;
+    if(!regNo || !password) {
+        return next(new ErrorHandler("Enter your registration number or password", status.BAD_REQUEST));
+    };
+    //Check to see if the user Reg_No does exist in the database;
+    const user = await User.findOne({regNo}).select('+password');
+    if(!user) {
+        return next(new ErrorHandler("Invalid registration number", status.NOT_FOUND)); 
+    };
+    //Compare user password;
+    isPasswordValid = await HashPassword.comparePasswords(password, user.password);
+    if(!isPasswordValid) {
+        return next(new ErrorHandler("Invalid user password", status.BAD_REQUEST));
+    }
+
+    storeToken(user, status.OK, res);
+};
