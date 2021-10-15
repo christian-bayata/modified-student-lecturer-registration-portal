@@ -4,11 +4,15 @@ const validateRegister = require('../validations/user/user-register');
 const status = require('http-status');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
+
 const HashPassword = require('../utils/hash-password');
 const storeToken = require('../utils/store-token');
 const ErrorHandler = require('../utils/ErrorHandler');
+const getResetPasswordToken = require('../utils/reset-password');
+const sendEmail = require('../utils/send-email');
 
 /* 
+    Author: EDOMARUSE Frank
     @params: req
     @params: res
     @params: next
@@ -74,9 +78,56 @@ exports.loginUser = async (req, res, next) => {
     @returns: {Promise<*>} 
 */
 
+//user forgot password ................................/api/v1/reset
+exports.forgotPassword = async (req, res, next) => {
+    
+    //Check if user email exists in the database;
+    const user = await User.findOne({ email: req.body.email });
+    if(!user) {
+        return next(new ErrorHandler("Email does not exist", status.NOT_FOUND));
+    };
+    //Get the reset token
+    const resetToken = getResetPasswordToken(user);
+    await user.save({ validateBeforeSave: false });
+
+    //The reset password url
+    const resetPasswordUrl = `${req.protocol}://${req.get('host')}/api/v1/reset/${resetToken}`; 
+    //set the message that accompanies the password reset url
+    const resetMessage = `This is your password reset url: \n\n${resetPasswordUrl}\n\n However, if you did not request this email, simply ignore it.`
+
+    try{
+        await sendEmail({
+            email: user.email,
+            subject: 'Registration password recovery e-mail',
+            resetMessage
+        })
+
+        res.status(status.OK).json({
+            success: true,
+            message: `recovery mail sent to ${user.email}`
+        })
+    } 
+    catch(err) {
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+
+        await user.save({ validateBeforeSave: false });
+
+        return next(new ErrorHandler(err.message, status.BAD_REQUEST));
+    }
+}
+
+/* 
+    @params: req
+    @params: res
+    @params: next
+
+    @returns: {Promise<*>} 
+*/
+
 //Log out user ................................/api/v1/logout
 exports.logoutUser = async (req, res, next) => {
-    //Define the cookie options
+    //Set the cookie options
     const options = {
         expires: new Date(Date.now),
         httpOnly: false

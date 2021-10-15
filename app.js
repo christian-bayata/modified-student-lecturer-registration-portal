@@ -14,7 +14,7 @@ app.use(cookieParser());
 
 //Import all routes
 const courses = require('./routes/courses')
-const users = require('./routes/users')
+const users = require('./routes/auth')
 
 //Use the imported routes
 app.use('/api/v1', courses);
