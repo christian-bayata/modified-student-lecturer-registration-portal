@@ -15,6 +15,7 @@
     "url": "https://github.com/christian-bayata/modified-student-lecturer-registration-portal"
   },
   "dependencies": {
+    "amqplib": "^0.8.0",
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.5",
     "crypto": "^1.0.1",
