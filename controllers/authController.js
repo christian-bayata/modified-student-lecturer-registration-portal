@@ -4,7 +4,7 @@ const validateRegister = require('../validations/user/user-register');
 const status = require('http-status');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
-
+const crypto = require('crypto');
 const HashPassword = require('../utils/hash-password');
 const storeToken = require('../utils/store-token');
 const ErrorHandler = require('../utils/ErrorHandler');
@@ -91,15 +91,15 @@ exports.forgotPassword = async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     //The reset password url
-    const resetPasswordUrl = `${req.protocol}://${req.get('host')}/api/v1/reset/${resetToken}`; 
+    const resetPasswordUrl = `${req.protocol}://${req.get('host')}/api/v1/reset/password/${resetToken}`; 
     //set the message that accompanies the password reset url
-    const resetMessage = `This is your password reset url: \n\n${resetPasswordUrl}\n\n However, if you did not request this email, simply ignore it.`
+    const message = `This is your password reset url: \n\n${resetPasswordUrl}\n\n However, if you did not request this email, simply ignore it.`
 
     try{
         await sendEmail({
             email: user.email,
             subject: 'Registration password recovery e-mail',
-            resetMessage
+            message
         })
 
         res.status(status.OK).json({
@@ -115,6 +115,41 @@ exports.forgotPassword = async (req, res, next) => {
 
         return next(new ErrorHandler(err.message, status.BAD_REQUEST));
     }
+}
+
+/*
+    @params: req
+    @params: res
+    @params: next
+*/
+
+// //reset user password
+exports.resetPassword = async (req, res, next) => {
+
+    // Hash the already existing password token;
+    const resetPasswordToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+    //Check to see if the user with this password does exist in the database;
+    const user = await User.findOne({
+        resetPasswordToken,
+        resetPasswordExpires: { $gt: Date.now() }
+    }) 
+    if(!user) {
+        return next(new ErrorHandler("Reset token for password is either invalid or has expired", status.BAD_REQUEST));
+    }
+    //Validate password and confirm password
+    if(req.body.password !== req.body.confirmPassword) {
+        return next(new ErrorHandler("Your password does not match", status.NOT_FOUND));
+    }
+    //If user has been validated
+    //Encrypt the password
+    user.password = await HashPassword.encryptPassword(req.body.password);
+    //Nullify the password reset token and its expiry date;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    storeToken(user, status.OK, res);
 }
 
 /* 

@@ -16,4 +16,4 @@ const getResetPasswordToken = (user) => {
     return resetToken;
 }
 
-module.exports = getResetPasswordToken;
+module.exports = getResetPasswordToken; 

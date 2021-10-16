@@ -14,11 +14,11 @@ app.use(cookieParser());
 
 //Import all routes
 const courses = require('./routes/courses')
-const users = require('./routes/auth')
+const auth = require('./routes/auth')
 
 //Use the imported routes
 app.use('/api/v1', courses);
-app.use('/api/v1', users);
+app.use('/api/v1', auth);
 
 //Use the error handling middleware;
 app.use(errorMiddleware);
