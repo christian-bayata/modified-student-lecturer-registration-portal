@@ -33,7 +33,10 @@ exports.registerCourse = async (req, res, next) => {
     };
 
     //Ensure that student cannot register the same course twice
-    const ensureNotAlreadyRegistered = await Action.findOne({ id: req.user.id });
+    const ensureNotAlreadyRegistered = await Action.findOne({ 
+        courseDetail: courseDetails.courseId, 
+        userDetail: userDetails.userId
+    });
     if(ensureNotAlreadyRegistered) {
         return next(new ErrorHandler(`You have already registered for ${courseDetails.code}`, status.BAD_REQUEST));
     };
