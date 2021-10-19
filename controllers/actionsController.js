@@ -84,4 +84,19 @@ exports.updateCourse = async (req, res, next) => {
         message: "course update was successful",
         actionID
     })
-}   
+};
+
+//Allows student to delete a course within a given time.............../api/v1/action/delete/course/:id
+exports.deleteCourse = async (req, res, next) => {
+    let actionID = await Action.findById(req.params.id);
+    if(!actionID) {
+        return next(new ErrorHandler(`ID ${req.params.id} does not exist`, status.NOT_FOUND));
+    };
+
+    await Action.deleteOne();
+
+    res.status(status.OK).json({
+        success: true,
+        message: "course has been successfully deleted"
+    });   
+}
