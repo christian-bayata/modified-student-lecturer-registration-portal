@@ -5,6 +5,7 @@ const User = require('../models/users');
 const Course = require('../models/courses');
 const ErrorHandler = require('../utils/ErrorHandler');
 const validateCourseRegister = require('../validations/actions/course-register');
+const validateCourseUpdate = require('../validations/actions/course-update');
 
 /* 
     Author: EDOMARUSE Frank
@@ -51,4 +52,36 @@ exports.registerCourse = async (req, res, next) => {
         message: "You've successfully registered this course",
         result
     });
-}
+};
+
+/* 
+    @params: req
+    @params: res
+    @params: next
+
+    @returns: {Promise<*>} 
+*/
+
+//Allows student to update a course within a given time.............../api/v1/action/update/course/:id
+exports.updateCourse = async (req, res, next) => {
+   
+    //validate the input of the user
+    const { error }  = await validateCourseUpdate(req.body); 
+    if(error) return res.status(status.BAD_REQUEST).json(error.details[0].message);
+
+    let actionID = await Action.findById(req.params.id);
+    if(!actionID) {
+        return next(new ErrorHandler(`ID ${req.params.id} does not exist`, status.NOT_FOUND));
+    };
+
+    actionID = await Action.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        useFindAndModify: false
+    });
+
+    res.status(status.OK).json({
+        success: true,
+        message: "course update was successful",
+        actionID
+    })
+}   
