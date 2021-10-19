@@ -5,6 +5,7 @@ const { registerUser,
         loginUser, 
         forgotPassword,
         resetPassword,
+        getUserDetails,
         logoutUser 
 } = require('../controllers/authController');
 

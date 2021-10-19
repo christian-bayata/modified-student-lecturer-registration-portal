@@ -24,12 +24,23 @@ const validateRegister = (user) => {
                     .required(),
 
         email: Joi.string()
-                    .email({ minDomainSegments: 2, tlds: { allow: [ 'com', 'net' ] }}),
+                    .email({ minDomainSegments: 2, tlds: { allow: [ 'com', 'net' ] }})
+                    .required(),
                     
         password: Joi.string()
                     .min(6)
-                    .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
-    })
+                    .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
+                    .required(),
+
+        level: Joi.string()
+                    .max(3)
+                    .required(),
+
+        department: Joi.string()
+                    .min(6)
+                    .max(100)
+                    .required()
+    });
 
     return schema.validate(user);
 }

@@ -4,10 +4,10 @@ const validateRegister = require('../validations/user/user-register');
 const status = require('http-status');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
-const crypto = require('crypto');
+const crypto = require('crypto'); 
 const HashPassword = require('../utils/hash-password');
 const storeToken = require('../utils/store-token');
-const ErrorHandler = require('../utils/ErrorHandler');
+const ErrorHandler = require('../utils/ErrorHandler'); 
 const getResetPasswordToken = require('../utils/reset-password');
 const sendEmail = require('../utils/send-email');
 
@@ -19,7 +19,7 @@ const sendEmail = require('../utils/send-email');
 
     @returns: {Promise<*>} 
 */
-
+ 
 //Registers a new user ....................../api/v1/register
 exports.registerUser = async (req, res, next) => {
     
@@ -27,19 +27,19 @@ exports.registerUser = async (req, res, next) => {
     const { error }  = await validateRegister(req.body); 
     if(error) return res.status(status.BAD_REQUEST).json(error.details[0].message);
   
-    let { firstName, lastName, email, password, regNo } = req.body;
+    let { firstName, lastName, email, password, regNo, level, department } = req.body;
     
     //Check to see if the user already exists;
     let checkUserReg = await User.findOne({regNo});
     if(checkUserReg) return next(new ErrorHandler("The user with this registration number already exists", status.BAD_REQUEST));
     
     password = await HashPassword.encryptPassword(password);
-    let user =  await User.create({ firstName, lastName, email, password, regNo })
+    let user =  await User.create({ firstName, lastName, email, password, regNo, level, department })
     
-    storeToken(user, status.OK, res);
+    storeToken(user, status.CREATED, res);
 }
 
-/* 
+/*   
     @params: req
     @params: res
     @params: next
@@ -47,7 +47,7 @@ exports.registerUser = async (req, res, next) => {
     @returns: {Promise<*>} 
 */
 
-//Login user ............................../api/v1/login
+//Login user ............................../api/v1/login 
 exports.loginUser = async (req, res, next) => {
    
     let { regNo, password } = req.body;
@@ -78,7 +78,7 @@ exports.loginUser = async (req, res, next) => {
     @returns: {Promise<*>} 
 */
 
-//user forgot password ................................/api/v1/reset
+//user forgot password ................................/api/v1/forgot/password
 exports.forgotPassword = async (req, res, next) => {
     
     //Check if user email exists in the database;
@@ -123,7 +123,7 @@ exports.forgotPassword = async (req, res, next) => {
     @params: next
 */
 
-// //reset user password
+//reset user password .................................../api/v1/reset/password
 exports.resetPassword = async (req, res, next) => {
 
     // Hash the already existing password token;
@@ -150,6 +150,16 @@ exports.resetPassword = async (req, res, next) => {
     await user.save();
 
     storeToken(user, status.OK, res);
+}
+
+//get the details of the currently logged in user ................../api/v1/me
+exports.getUserDetails = async (req, res, next) => {
+    const user = await User.findById(req.user.id);
+
+    res.status(status.OK).json({
+        success: true,
+        user 
+    })
 }
 
 /* 

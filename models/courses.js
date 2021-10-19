@@ -15,10 +15,21 @@ const courseSchema = new mongoose.Schema({
     units: {
         type: Number,
         required: true,
-        default: 0
     },
     level: {
-        type: Number,
+        type: String,
+        maxlength: 3,
+        required: true
+    },
+    department: {
+        type: String,
+        required: true,
+        minlength: 6,
+        maxlength: 100
+    },
+    user : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true
     }
 }, {timestamps: true}

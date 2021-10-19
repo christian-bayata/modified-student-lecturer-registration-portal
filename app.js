@@ -13,12 +13,16 @@ app.use(express.json());
 app.use(cookieParser());
 
 //Import all routes
-const courses = require('./routes/courses')
-const auth = require('./routes/auth')
+const courses = require('./routes/courses');
+const auth = require('./routes/auth');
+const students = require('./routes/students');
+const actions = require('./routes/actions');
 
 //Use the imported routes
 app.use('/api/v1', courses);
 app.use('/api/v1', auth);
+app.use('/api/v1', students);
+app.use('/api/v1', actions);
 
 //Use the error handling middleware;
 app.use(errorMiddleware);
