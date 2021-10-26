@@ -19,30 +19,30 @@ exports.userIsAuthenticated = async (req, res, next) => {
     if(!token) {
         return next(new ErrorHandler("Please login first", status.UNAUTHORIZED));
     }
-
+ 
     //If token does exist
     try {
         const decoded = jwt.verify(token, process.env.JWTPRIVATEKEY);
         //Check if the decoded token contains the user ID;
-        req.user = await User.findOne({ id: decoded.id });
-        next();
+        req.user = await User.findById(decoded.id);
+        return next();
     }
     catch(err) {
         return next(new ErrorHandler('You are not authorized to access this resource', status.UNAUTHORIZED));
     }
 }
 
-/* 
+/*  
     responsibility: Checks to see if user is authorized
     @params: roles
     @returns: {<*>}
 */
 
-exports.userIsAuthorized = (...roles) => {
-    return function(req, res, next) {
-        if(!roles.include(req.user.role)) {
+exports.userIsAuthorized = function (...roles) {
+    return (req, res, next) => {
+        if(!roles.includes(req.user.role)) {
             return next(new ErrorHandler(`Sorry, ${req.user.role}s cannot access this resource`, status.FORBIDDEN));
         }
         next();
-    }
-}
+    };
+};

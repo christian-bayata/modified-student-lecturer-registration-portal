@@ -50,8 +50,9 @@ const userSchema = new mongoose.Schema({
 }, { timestamps: true })
 
 
-userSchema.methods.generateAuthToken = () => {
-    return jwt.sign({ id: this._id }, process.env.JWTPRIVATEKEY);    
+userSchema.methods.generateAuthToken = function() {
+    const token = jwt.sign({ id: this.id }, process.env.JWTPRIVATEKEY);  
+    return token;  
 };
 
 module.exports = mongoose.model("User", userSchema);

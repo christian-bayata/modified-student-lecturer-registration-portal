@@ -33,15 +33,6 @@ exports.registerCourse = async (req, res, next) => {
         return next(new ErrorHandler("This course is out of your scope, sorry choose another one", status.BAD_REQUEST));
     };
 
-    //Ensure that student cannot register the same course twice
-    const ensureNotAlreadyRegistered = await Action.findOne({ 
-        courseDetail: courseDetails.courseId, 
-        userDetail: userDetails.userId
-    });
-    if(ensureNotAlreadyRegistered) {
-        return next(new ErrorHandler(`You have already registered for ${courseDetails.code}`, status.BAD_REQUEST));
-    };
-
     const result = await Action.create({
         courseDetails,
         userDetails
@@ -86,6 +77,14 @@ exports.updateCourse = async (req, res, next) => {
     })
 };
 
+/* 
+    @params: req
+    @params: res
+    @params: next
+
+    @returns: {Promise<*>}
+*/
+
 //Allows student to delete a course within a given time.............../api/v1/action/delete/course/:id
 exports.deleteCourse = async (req, res, next) => {
     let actionID = await Action.findById(req.params.id);
@@ -100,3 +99,48 @@ exports.deleteCourse = async (req, res, next) => {
         message: "course has been successfully deleted"
     });   
 }
+
+/* 
+    @params: req
+    @params: res
+    @params: next
+
+    @returns: {Promise<*>}
+*/
+
+//get the details of the currently logged in user ................../api/v1/me
+exports.getStudentDetails = async (req, res, next) => {
+    const student = await User.findById(req.user.id);
+
+    res.status(status.OK).json({
+        success: true,
+        student
+    })
+};
+
+//Routes that are accessible to the ADMIN alone.....
+
+/* 
+    @params: req
+    @params: res
+    @params: next
+
+    @returns: {Promise<*>}
+*/
+
+//Route for getting all students that have registered for the course ............../api/v1/admin/students
+exports.getAllRegisteredStudents = async (req, res, next) => {
+    const actions = await Action.find();
+
+    let totalNoOfRegisteredStudents = 0;
+
+    actions.forEach(student => {
+        totalNoOfRegisteredStudents += student.studentRegistered;  
+    });
+
+    res.status(status.OK).json({
+        success: true,
+        totalNoOfRegisteredStudents,
+        actions
+    })
+};
