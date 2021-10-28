@@ -12,11 +12,6 @@ const ErrorHandler = require('../utils/ErrorHandler');
     @return <Promise(void)>
 */
 
-//Register a new course .........................../api/v1/course/register
-exports.registerCourse = async (req, res, next) => {
-    
-}
-
 //Gets all courses ......................./api/v1/courses
 exports.getCourses = async (req, res, next) => {
 
@@ -49,5 +44,4 @@ exports.getSingleCourse = async (req, res, next) => {
     });
 };
 
-//
 

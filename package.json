@@ -5,8 +5,10 @@
   "main": "app.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "SET NODE_ENV=DEVELOPMENT& nodemon server.js",
-    "seeder": "nodemon utils/seeder"
+    "dev": "SET NODE_ENV=DEVELOPMENT&&nodemon server.js",
+    "prod": "SET NODE_ENV=PRODUCTION& nodemon server.js",
+    "seeder": "nodemon utils/seeder",
+    "test":"SET NODE_ENV=TESTING && jest --watchAll --verbose --coverage --runInBand"
   },
   "author": "Edomaruse Frank",
   "license": "ISC",
@@ -31,6 +33,7 @@
     "nodemailer": "^6.7.0"
   },
   "devDependencies": {
+    "jest": "^27.3.1",
     "nodemon": "^2.0.13"
   }
 }

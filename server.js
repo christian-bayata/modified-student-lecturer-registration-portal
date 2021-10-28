@@ -12,7 +12,9 @@ process.on('uncaughtExceptions', (err) => {
 dotenv.config({ path: "config/config.env" })
 
 //Set up the database connection
-dbConnect();
+let databaseURI = process.env.DB_LOCAL_URI;
+if(process.env.NODE_ENV === "TESTING") databaseURI = process.env.DB_TEST_URI;
+dbConnect(databaseURI).then(() => true);
 
 const port = process.env.PORT;
 const environment = process.env.NODE_ENV;
