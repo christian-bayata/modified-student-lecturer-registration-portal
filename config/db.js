@@ -1,12 +1,18 @@
-const mongoose = require('mongoose'); 
+const mongoose = require('mongoose');
 
 const dbConnect = async (databaseURI) => {
-       await mongoose.connect(databaseURI, {
+    try{
+        await mongoose.connect(databaseURI, {
             useNewUrlParser: true,
-            useUnifiedTopology: true
+            useUnifiedTopology: true,
         })
-        .then(conn => console.log(`Database is connected to host: ${conn.connection.host}`))
-        .catch(err => console.log("Could not connect to the database", err));
+        .then((conn) => console.log(`Database is connected to the host: ${conn.connection.host}`));
+    } 
+    catch(error) {
+        console.log(error);
+        process.exit(1);
+    }
+    
     }    
 
 module.exports = dbConnect;

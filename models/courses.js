@@ -15,7 +15,7 @@ const courseSchema = new mongoose.Schema({
     units: {
         type: Number,
         required: true,
-    },
+    }, 
     level: {
         type: String,
         maxlength: 3,

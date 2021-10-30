@@ -21,7 +21,7 @@ exports.getCourses = async (req, res, next) => {
         success: true,
         courses
     });
-};
+}; 
 
 /*
     @params: req

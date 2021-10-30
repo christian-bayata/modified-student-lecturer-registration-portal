@@ -1,3 +1,4 @@
+require('dotenv').config();
 require('express-async-errors');
 const User = require('../models/users');
 const validateRegister = require('../validations/user/user-register');

@@ -1,6 +1,6 @@
 require('express-async-errors');
 const ErrorHandler = require('../utils/ErrorHandler');
-const status = require('http-status');
+const status = require('http-status'); 
 const jwt = require('jsonwebtoken');
 const User = require('../models/users');
 
@@ -31,7 +31,7 @@ exports.userIsAuthenticated = async (req, res, next) => {
         return next(new ErrorHandler('You are not authorized to access this resource', status.UNAUTHORIZED));
     }
 }
-
+ 
 /*  
     responsibility: Checks to see if user is authorized
     @params: roles
