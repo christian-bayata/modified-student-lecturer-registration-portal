@@ -20,7 +20,7 @@ const sendEmail = require('../utils/send-email');
 
     @returns: {Promise<*>} 
 */
- 
+  
 //Registers a new user ....................../api/v1/register
 exports.registerUser = async (req, res, next) => {
     
@@ -50,7 +50,7 @@ exports.registerUser = async (req, res, next) => {
 
 //Login user ............................../api/v1/login 
 exports.loginUser = async (req, res, next) => {
-   
+  
     let { regNo, password } = req.body;
 
     //Check to be sure that the user supplies both Reg_No and password;

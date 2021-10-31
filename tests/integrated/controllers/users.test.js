@@ -3,7 +3,7 @@ const User = require('../../../models/users');
 const HashPassword = require('../../../utils/hash-password');
 
 let server;
-describe('/api/v1/users', () => {
+describe('Auth', () => {
     beforeEach(() => { 
         server = require('../../../server');
     });
@@ -12,9 +12,9 @@ describe('/api/v1/users', () => {
         await User.deleteMany({})
     });
 
-    describe('Register/create new user', () => {
+    describe('Register new user (/api/v1/register)', () => {
         
-        let url = '/api/v1/register';
+        const url = '/api/v1/register';
 
         let userPayload = {
             firstName: "user_firstname",
@@ -25,45 +25,49 @@ describe('/api/v1/users', () => {
             department: "user_department",
             level: "lev"
          };
+
+         const exec = async () => {
+             return await request(server).post('/api/v1/register').send(userPayload);
+         }
          
         it('should return 400 if user firstname is missing from the payload', async () => {
-            const res = await request(server).post(url).send(userPayload);
+            const res = await exec();
             userPayload.firstName = "";
             expect(res.status).toEqual(400);
         });
 
         it('should return 400 if user lastname is missing from the payload', async () => {
-            const res = await request(server).post(url).send(userPayload);
+            const res = await exec();
             userPayload.lastName = "";
             expect(res.status).toEqual(400);
         });
 
         it('should return 400 if user email is missing from the payload', async () => {
-            const res = await request(server).post(url).send(userPayload);
+            const res = await exec();
             userPayload.email = "";
             expect(res.status).toEqual(400);
         });
 
         it('should return 400 if user password is missing from the payload', async () => {
-            const res = await request(server).post(url).send(userPayload);
+            const res = await exec();
             userPayload.password = "";
             expect(res.status).toEqual(400);
         });
 
         it('should return 400 if user registration number is missing from the payload', async () => {
-            const res = await request(server).post(url).send(userPayload);
+            const res = await exec();
             userPayload.regNo = "";
             expect(res.status).toEqual(400);
         });
 
         it('should return 400 if user level is missing from the payload', async () => {
-            const res = await request(server).post(url).send(userPayload);
+            const res = await exec();
             userPayload.level = "";
             expect(res.status).toEqual(400);
         });
 
         it('should return 400 if user department is missing from the payload', async () => {
-            const res = await request(server).post(url).send(userPayload);
+            const res = await exec();
             userPayload.department = "";
             expect(res.status).toEqual(400);
         });
@@ -109,8 +113,20 @@ describe('/api/v1/users', () => {
           
             expect(user).not.toBe(null);
             expect(user).toHaveProperty("_id");
-        });
-
-       
+        });       
     });
+
+    // describe('Login users (/api/v1/login)', () => {
+    //     const url = "/api/v1/login";
+    //     let userDetails = {
+    //         "regNo": "user_regNo",
+    //         "password": "user_password"
+    //     };
+
+    //     it('should return 400 if user does not provide registration number', async() => {
+    //         let res = await request(server).post(url).send(userDetails);
+    //         userDetails.regNo = "";
+    //         expect(res.status).toBe(400);
+    //     })
+    // })
 })
