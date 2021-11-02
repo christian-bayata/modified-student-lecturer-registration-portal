@@ -1,33 +1,35 @@
+require('dotenv').config();
 const request = require('supertest');
+const mongoose = require('mongoose');
 const User = require('../../../models/users');
 const HashPassword = require('../../../utils/hash-password');
+const { setupTestDatabase } = require('../../test-setup');
 
 let server;
-describe('Auth', () => {
-    beforeEach(() => { 
-        server = require('../../../server');
-    });
-    afterEach(async() => {
-        server.close();
-        await User.deleteMany({})
-    });
+const url = '/api/v1';
 
+describe('Auth', () => {
+    setupTestDatabase("regDB_tests")
+    
+    beforeEach(() => { server = require('../../../server')});
+
+    afterEach(() => {
+        server.close();
+    })
     describe('Register new user (/api/v1/register)', () => {
         
-        const url = '/api/v1/register';
-
         let userPayload = {
             firstName: "user_firstname",
             lastName: "user_lastname",
             email: "user_email",
             password: "user_password",
             regNo: "user_regNo",
-            department: "user_department",
-            level: "lev"
+            level: "lev",
+            department: "user_department"
          };
 
          const exec = async () => {
-             return await request(server).post('/api/v1/register').send(userPayload);
+             return await request(server).post(`${url}/register`).send(userPayload);
          }
          
         it('should return 400 if user firstname is missing from the payload', async () => {
@@ -89,7 +91,7 @@ describe('Auth', () => {
                 regNo: "user_regNo"
              }
 
-            const res = await request(server).post(url).send(unwantedUserPayload);
+            const res = await request(server).post(`${url}/register`).send(unwantedUserPayload);
             expect(res.status).toEqual(400);
         });
 
@@ -97,36 +99,35 @@ describe('Auth', () => {
              const hashedPassword = await HashPassword.encryptPassword(userPayload.password);
              
             expect(hashedPassword).toBeTruthy();
-        });
-
-        it('should create new users', async () => {
+        }); 
+        
+        it('should save users into the database', async () => {
+            const userPayload = {
+            firstName: "user_firstname",
+            lastName: "user_lastname",
+            email: "user@gmail.com",
+            password: "user_password",
+            regNo: "user_regNo",
+            level: "lev",
+            department: "user_department"
+            };
             
-            const user = await User.create({
-                firstName: "user_firstname",
-                lastName: "user_lastname",
-                email: "user_email",
-                password: "user_password",
-                regNo: "user_regNo",
-                department: "user_department",
-                level: "lev"
-             });  
-          
-            expect(user).not.toBe(null);
-            expect(user).toHaveProperty("_id");
-        });       
+            const res = await request(server).post(`${url}/register`).send(userPayload);
+            const user = await User.findOne({email: "user@gmail.com"});
+            
+            expect(res.body.firstName).toBeTruthy();
+        })
     });
 
-    // describe('Login users (/api/v1/login)', () => {
-    //     const url = "/api/v1/login";
-    //     let userDetails = {
-    //         "regNo": "user_regNo",
-    //         "password": "user_password"
-    //     };
-
-    //     it('should return 400 if user does not provide registration number', async() => {
-    //         let res = await request(server).post(url).send(userDetails);
-    //         userDetails.regNo = "";
+    // describe('Login Users', () => {
+    //     it('should return 400 if user does not provide his password', async () => {
+    //         let userDetails = {
+    //             regNo: "user_regNo",
+    //             password: "user_password"
+    //         };
+    //         const res = await request(server).post(`${url}/login`).send(userDetails);
     //         expect(res.status).toBe(400);
+    //         })
     //     })
-    // })
+
 })
