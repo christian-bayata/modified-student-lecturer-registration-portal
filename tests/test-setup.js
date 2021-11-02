@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 mongoose.promise = global.Promise;
 
 //Function for removing all test collections
-async function removeAllCollections() {
+exports.removeAllCollections = async function() {
     const allCollections = Object.keys(mongoose.connection.collections);
     //Loop over each collection in the database
     for(const collectionName of allCollections) {
@@ -12,7 +12,7 @@ async function removeAllCollections() {
 };
 
 //Function for dropping all test collections after all tests have ran
-async function dropAllCollections() {
+exports.dropAllCollections = async function() {
     const allCollections = Object.keys(mongoose.connection.collections);
     //Loop over each collection in the database
     for(const collectionName of allCollections) {
@@ -29,25 +29,3 @@ async function dropAllCollections() {
     };
 };
 
-module.exports = {
-    setupTestDatabase(databaseName) {
-    
-        beforeAll(async () => {
-            let databaseURI = `mongodb://localhost:27017/${databaseName}`
-            await mongoose.connect(databaseURI, {
-                useNewUrlParser: true
-            });
-        });
-        
-        afterEach(async() => {
-            await removeAllCollections();
-        });
-
-        //Disconnect Mongoose
-        afterAll(async () => {
-            await dropAllCollections();
-            //End mongoose connection
-            await mongoose.connection.close();
-        });        
-    }
-}

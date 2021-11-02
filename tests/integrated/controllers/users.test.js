@@ -1,21 +1,33 @@
-require('dotenv').config();
 const request = require('supertest');
 const mongoose = require('mongoose');
 const User = require('../../../models/users');
 const HashPassword = require('../../../utils/hash-password');
-const { setupTestDatabase } = require('../../test-setup');
+const { removeAllCollections, dropAllCollections } = require('../../test-setup');
 
 let server;
 const url = '/api/v1';
+const databaseName = "regDB_tests";
+
 
 describe('Auth', () => {
-    setupTestDatabase("regDB_tests")
     
-    beforeEach(() => { server = require('../../../server')});
+    beforeAll(async () => {
+        let databaseURI = `mongodb://localhost:27017/${databaseName}`
+        await mongoose.connect(databaseURI, {
+            useNewUrlParser: true
+        });
+        server = require('../../../server');
+    });
 
-    afterEach(() => {
+    afterEach(async () => {
         server.close();
+        await removeAllCollections();
+    });
+
+    afterAll(async () => {
+        await dropAllCollections();
     })
+    
     describe('Register new user (/api/v1/register)', () => {
         
         let userPayload = {
@@ -112,10 +124,11 @@ describe('Auth', () => {
             department: "user_department"
             };
             
-            const res = await request(server).post(`${url}/register`).send(userPayload);
-            const user = await User.findOne({email: "user@gmail.com"});
+            const user = await User.insertMany(userPayload);
             
-            expect(res.body.firstName).toBeTruthy();
+            const res = await request(server).post(`${url}/register`).send(userPayload);
+            expect(user).not.toBeNull();
+            console.log(user);
         })
     });
 
