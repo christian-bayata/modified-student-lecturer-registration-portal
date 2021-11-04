@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
+const config = require('config');
 
-const dbConnect = async (databaseURI) => {
+const dbConnect = async () => {
     try{
-        await mongoose.connect(databaseURI, {
+        const db = config.get('db');
+        await mongoose.connect(db, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         })
-        .then((conn) => console.log(`Database is connected to the host: ${conn.connection.host}`));
+        .then(() => console.log(`Database is connected to ${db}`));
     } 
     catch(error) {
         console.log(error);
