@@ -5,7 +5,7 @@
 //     @params: res
 //     @returns : {Promise<void>}
 // */
-
+ 
 const storeToken = (user, statusCode, res) => {
     //Import token from the User model
     const token = user.generateAuthToken();

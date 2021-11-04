@@ -5,14 +5,14 @@
   "main": "app.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "SET NODE_ENV=DEVELOPMENT&&nodemon server.js",
-    "prod": "SET NODE_ENV=PRODUCTION& nodemon server.js",
+    "dev": "SET NODE_ENV=development&&nodemon server.js",
+    "prod": "SET NODE_ENV=production& nodemon server.js",
     "seeder": "nodemon utils/seeder",
-    "test": "SET NODE_ENV=TESTING& jest --watch --verbose --detectOpenHandles --runInBand --setupFiles dotenv/config"
+    "test": "SET NODE_ENV=test& jest --watch --verbose --detectOpenHandles --runInBand --setupFiles dotenv/config"
   },
   "author": "Edomaruse Frank",
   "license": "ISC",
-  "repository": { 
+  "repository": {
     "type": "git",
     "url": "https://github.com/christian-bayata/modified-student-lecturer-registration-portal"
   },
